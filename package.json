@@ -9,8 +9,8 @@
     "dev": "nodemon app.js",
     "test": "vitest",
     "test coverage": "vitest run --coverage",
-    "format": "prettier --write src"
-    
+    "format": "prettier --write src",
+    "init_db": "node db/init_db.js"
   },
   "repository": {
     "type": "git",

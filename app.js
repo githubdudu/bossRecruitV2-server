@@ -1,30 +1,35 @@
+// Configure environment variables
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { MongoClient, ServerApiVersion } from 'mongodb';
-const uri = `mongodb+srv://${process.env.db_username}:${process.env.db_password}@cluster0.a7lvqyo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-console.log(uri);
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
+import express from "express";
+import cors from "cors";
+import morgan from "morgan";
+import mongoose from "mongoose";
+import cookieParser from 'cookie-parser';
 
-async function run() {
-  try {
-    const database = client.db('sample_mflix');
-    const movies = database.collection('movies');
-    // Queries for a movie that has a title value of 'Back to the Future'
-    const query = { title: 'Back to the Future' };
-    const movie = await movies.findOne(query);
+// Set's our port to the PORT environment variable, or 3000 by default if the env is not configured.
+const PORT = process.env.PORT ?? 3000;
 
-    console.log(movie);
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
-}
-run().catch(console.dir);
+// Creates the express server
+const app = express();
+
+// Configure middleware (logging, CORS support, JSON parsing support, static files support)
+app.use(morgan("combined"));
+app.use(cors());
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.static("public"));
+
+// Import and use our application routes.
+import routes from "./routes/routes.js";
+app.use("/", routes);
+
+// Start the server running. Once the server is running, the given function will be called, which will
+// log a simple message to the server console.
+import { connectToDatabase } from "./db/mongodb.js";
+await connectToDatabase();
+app.listen(PORT, () => console.log(`App server listening on port ${PORT}!`));
+
+
+
