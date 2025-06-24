@@ -1,12 +1,12 @@
 // Configure environment variables
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import mongoose from "mongoose";
-import cookieParser from 'cookie-parser';
+import cookieParser from "cookie-parser";
 
 // Set's our port to the PORT environment variable, or 3000 by default if the env is not configured.
 const PORT = process.env.PORT ?? 3000;
@@ -30,6 +30,3 @@ app.use("/", routes);
 import { connectToDatabase } from "./db/mongodb.js";
 await connectToDatabase();
 app.listen(PORT, () => console.log(`App server listening on port ${PORT}!`));
-
-
-

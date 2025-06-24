@@ -6,14 +6,14 @@ import { connectToDatabase, disconnectFromDatabase } from "./mongodb.js";
 const names = [{ name: "Andrew Mead" }, { name: "Bob" }, { name: "Charlie" }];
 
 async function initDatabase() {
-    await  connectToDatabase();
+  await connectToDatabase();
 
-    await NameModel.deleteMany({}); // Clear existing names
-    await NameModel.insertMany(names); // Insert new names
+  await NameModel.deleteMany({}); // Clear existing names
+  await NameModel.insertMany(names); // Insert new names
 
-    console.log("✨Database initialized done!✨");
+  console.log("✨Database initialized done!✨");
 
-    await disconnectFromDatabase();
+  await disconnectFromDatabase();
 }
 
 initDatabase();

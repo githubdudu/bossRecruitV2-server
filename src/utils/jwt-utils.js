@@ -1,5 +1,5 @@
 /**
- * This is a functional jwt utils based on the jsonwebtoken library. 
+ * This is a functional jwt utils based on the jsonwebtoken library.
  */
 import jwt from "jsonwebtoken";
 
