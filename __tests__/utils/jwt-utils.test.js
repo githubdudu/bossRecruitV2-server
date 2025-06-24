@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import jwt from "jsonwebtoken";
-import { getPayloadFromJWT, createJWT } from "../../utils/jwt-utils.js";
+import { getPayloadFromJWT, createJWT } from "#utils/jwt-utils.js";
 
 // Mock the jsonwebtoken library
 vi.mock("jsonwebtoken", () => {
@@ -115,7 +115,7 @@ describe("JWT Utilities", () => {
 
     it("should create and verify a real JWT", async () => {
       // We need to re-import the functions to use the real implementation
-      const { createJWT, getPayloadFromJWT } = await import("../../utils/jwt-utils.js");
+      const { createJWT, getPayloadFromJWT } = await import("#utils/jwt-utils.js");
 
       // Test data
       const payload = { userId: "456", role: "editor" };

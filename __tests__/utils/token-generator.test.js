@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import jwt from "jsonwebtoken";
-import TokenGenerator from "../../utils/token-generator.js";
+import TokenGenerator from "#utils/token-generator.js";
 
 // Mock the jsonwebtoken library
 vi.mock("jsonwebtoken", () => ({
@@ -158,7 +158,7 @@ describe("TokenGenerator", () => {
       vi.resetModules();
 
       // Import fresh TokenGenerator class that will use the real jsonwebtoken library
-      TokenGeneratorActual = (await import("../../utils/token-generator.js")).default;
+      TokenGeneratorActual = (await import("#utils/token-generator.js")).default;
 
       // Create a shared instance for all tests
       actualGenerator = new TokenGeneratorActual("test-secret-key", "test-secret-key", {

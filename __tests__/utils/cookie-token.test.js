@@ -1,9 +1,8 @@
-// filepath: /home/linuxdudu/codes/bossRecruitV2-server/__tests__/utils/cookie-token.test.js
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import TokenGenerator from "../../utils/token-generator.js";
+import TokenGenerator from "#utils/token-generator.js";
 
 // Mock dependencies
-vi.mock("../../utils/token-generator.js", () => {
+vi.mock("#utils/token-generator.js", () => {
   const mockSign = vi.fn().mockReturnValue("mock-token");
   const mockVerify = vi.fn().mockReturnValue({ userId: "mock-user" });
   const mockRefresh = vi.fn().mockReturnValue("refreshed-mock-token");
@@ -43,7 +42,7 @@ describe("Cookie Token Generator", () => {
   });
 
   it("should export an instance of TokenGenerator", async () => {
-    const cookieToken = (await import("../../utils/cookie-token.js")).default;
+    const cookieToken = (await import("#utils/cookie-token.js")).default;
     expect(cookieToken).toBeDefined();
     expect(typeof cookieToken.sign).toBe("function");
     expect(typeof cookieToken.verify).toBe("function");
@@ -54,7 +53,7 @@ describe("Cookie Token Generator", () => {
     // Test JWT_KEY that loaded by dotenv
     process.env.__TEST_WITH_KEY__ = true;
     vi.resetModules();
-    await import("../../utils/cookie-token.js");
+    await import("#utils/cookie-token.js");
 
     // Check if TokenGenerator was called with correct parameters
     expect(TokenGenerator).toHaveBeenCalledWith("test-secret-key", "test-secret-key", {
@@ -68,7 +67,7 @@ describe("Cookie Token Generator", () => {
 
     vi.resetModules();
     // Should still initialize but with default key
-    await import("../../utils/cookie-token.js");
+    await import("#utils/cookie-token.js");
 
     expect(TokenGenerator).toHaveBeenCalledWith(undefined, undefined, {
       expiresIn: "24h"
@@ -82,7 +81,7 @@ describe("Cookie Token Integration Tests", () => {
 
   beforeEach(() => {
     vi.resetModules();
-    vi.doUnmock("../../utils/token-generator.js");
+    vi.doUnmock("#utils/token-generator.js");
     process.env.JWT_KEY = "integration-test-key";
   });
 
@@ -91,7 +90,7 @@ describe("Cookie Token Integration Tests", () => {
   });
 
   it("should sign and verify tokens", async () => {
-    const cookieToken = (await import("../../utils/cookie-token.js")).default;
+    const cookieToken = (await import("#utils/cookie-token.js")).default;
 
     const payload = { userId: "123", role: "admin" };
     const token = cookieToken.sign(payload);
@@ -103,7 +102,7 @@ describe("Cookie Token Integration Tests", () => {
   });
 
   it("should refresh tokens and maintain custom claims", async () => {
-    const cookieToken = (await import("../../utils/cookie-token.js")).default;
+    const cookieToken = (await import("#utils/cookie-token.js")).default;
 
     // Create token with custom data
     const payload = { userId: "789", data: { permissions: ["read"] } };
@@ -123,7 +122,7 @@ describe("Cookie Token Integration Tests", () => {
   });
 
   it("should create tokens with custom options", async () => {
-    const cookieToken = (await import("../../utils/cookie-token.js")).default;
+    const cookieToken = (await import("#utils/cookie-token.js")).default;
 
     const payload = { userId: "456", role: "user" };
     const customOptions = { jwtid: "custom-id", audience: "test-audience" };
@@ -136,7 +135,7 @@ describe("Cookie Token Integration Tests", () => {
   });
 
   it("should throw error on invalid token verification", async () => {
-    const cookieToken = (await import("../../utils/cookie-token.js")).default;
+    const cookieToken = (await import("#utils/cookie-token.js")).default;
 
     const invalidToken = "invalid.token.format";
 

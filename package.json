@@ -5,13 +5,20 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js",
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
     "test": "vitest",
     "test:file": "vitest run",
     "test:coverage": "vitest run --coverage",
     "format": "prettier --write src",
-    "init_db": "node db/init_db.js"
+    "init_db": "node src/db/init_db.js"
+  },
+  "imports": {
+    "#/*": "./src/*",
+    "#utils/*": "./src/utils/*",
+    "#db/*": "./src/db/*",
+    "#middleware/*": "./src/middleware/*",
+    "#routes/*": "./src/routes/*"
   },
   "repository": {
     "type": "git",
