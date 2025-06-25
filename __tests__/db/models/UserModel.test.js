@@ -157,4 +157,28 @@ describe("UserModel Tests", () => {
       });
     });
   });
+  
+  describe("timestamps", () => {
+    let user;
+    beforeEach(async () => {
+      user = new UserModel(userData);
+      await user.save();
+    });
+    it("should have createdAt field and updatedAt field", async () => {
+      expect(user.createdAt).toBeDefined();
+      expect(user.createdAt).toBeInstanceOf(Date);
+      expect(user.updatedAt).toBeDefined();
+      expect(user.updatedAt).toBeInstanceOf(Date);
+    });
+    it("should update updatedAt field on update", async () => {
+      const originalUpdatedAt = user.updatedAt;
+      user.userName = "updatedUser";
+      await new Promise((resolve) => setTimeout(resolve, 10)); // Introduce a small delay
+      await user.save();
+
+      expect(user.updatedAt).toBeDefined();
+      expect(user.updatedAt).toBeInstanceOf(Date);
+      expect(user.updatedAt.getTime()).toBeGreaterThan(originalUpdatedAt.getTime());
+    });
+  });
 });
