@@ -14,7 +14,7 @@ const userSchema = mongoose.Schema(
     jobPosition: { type: String },
     description: { type: String },
     company: { type: String },
-    expectSalary: { type: String },
+    salary: { type: String },
     email: { type: String },
     phone: { type: String },
     address: { type: String },

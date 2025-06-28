@@ -5,7 +5,7 @@
 import mongoose from "mongoose";
 import { beforeAll, afterAll, describe, expect, it, beforeEach, afterEach } from "vitest";
 import { MongoMemoryServer } from "mongodb-memory-server";
-import { chatModel } from "#db/models/ChatModel.js";
+import { ChatModel } from "#db/models/ChatModel.js";
 
 let mongoServer;
 
@@ -36,11 +36,11 @@ describe("ChatModel Tests", () => {
   describe("creation", () => {
     afterEach(async () => {
       // Clear the Chat collection after each test
-      await chatModel.deleteMany({});
+      await ChatModel.deleteMany({});
     });
 
     it("should create a chat message with all required fields", async () => {
-      const chat = new chatModel(chatData);
+      const chat = new ChatModel(chatData);
       await chat.save();
 
       expect(chat.from).toBe("user1");
@@ -57,13 +57,13 @@ describe("ChatModel Tests", () => {
           const invalidChatData = { ...chatData };
           delete invalidChatData[field];
           
-          const chat = new chatModel(invalidChatData);
+          const chat = new ChatModel(invalidChatData);
           await expect(chat.save()).rejects.toThrow();
         });
       });
     
     it("should create a chat with isRead set to true", async () => {
-      const chat = new chatModel({ ...chatData, isRead: true });
+      const chat = new ChatModel({ ...chatData, isRead: true });
       await chat.save();
       
       expect(chat.isRead).toBe(true);
@@ -73,7 +73,7 @@ describe("ChatModel Tests", () => {
       const chatWithoutIsRead = { ...chatData };
       delete chatWithoutIsRead.isRead;
       
-      const chat = new chatModel(chatWithoutIsRead);
+      const chat = new ChatModel(chatWithoutIsRead);
       await chat.save();
       
       expect(chat.isRead).toBe(false);
@@ -82,7 +82,7 @@ describe("ChatModel Tests", () => {
     // Strict=true schema option ensures that only defined fields in the schema are saved
     it("should create a chat with an invalid property filtered out", async () => {
       const invalidChatData = { ...chatData, invalidProperty: "invalidValue" };
-      const chat = new chatModel(invalidChatData);
+      const chat = new ChatModel(invalidChatData);
 
       await chat.save();
       expect(chat.invalidProperty).toBeUndefined();
@@ -101,13 +101,13 @@ describe("ChatModel Tests", () => {
     
     beforeEach(async () => {
       // Create a chat before each test
-      chat = new chatModel(chatData);
+      chat = new ChatModel(chatData);
       await chat.save();
     });
     
     afterEach(async () => {
       // Clear the Chat collection after each test
-      await chatModel.deleteMany({});
+      await ChatModel.deleteMany({});
     });
 
     Object.keys(chatData).forEach((field) => {
@@ -123,7 +123,7 @@ describe("ChatModel Tests", () => {
   describe("timestamps", () => {
     let chat;
     beforeEach(async () => {
-      chat = new chatModel(chatData);
+      chat = new ChatModel(chatData);
       await chat.save();
     });
     
