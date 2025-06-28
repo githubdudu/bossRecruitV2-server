@@ -1,0 +1,79 @@
+@base-url = http://localhost:5173
+@version = v1
+
+### GET Hello World
+GET {{base-url}}/
+
+### Login User
+POST {{base-url}}/api/{{version}}/auth/login
+Content-Type: application/json
+
+{
+  "userName": "johndoe",
+  "userPassword": "password123"
+}
+
+### Logout User by cookie
+POST {{base-url}}/api/{{version}}/auth/logout
+
+
+### GET Users
+GET {{base-url}}/api/{{version}}/users
+
+### GET Users by type recruiter
+GET {{base-url}}/api/{{version}}/users?type=recruiter
+
+### GET Users by type applicant
+GET {{base-url}}/api/{{version}}/users?type=applicant
+
+### POST User
+POST {{base-url}}/api/{{version}}/users
+Content-Type: application/json
+
+{
+  "userName": "johndoe",
+  "userPassword": "password123",
+  "userType": "recruiter"
+}
+
+### POST User
+POST {{base-url}}/api/{{version}}/users
+Content-Type: application/json
+
+{
+  "userName": "johndoe",
+  "userPassword": "password123",
+  "userType": "recruiter",
+  "avatar": "https://example.com/avatar.jpg",
+  "jobPosition": "Software Engineer",
+  "company": "Tech Corp",
+  "expectSalary": 60000,
+  "email": "johndoe@example.com",
+  "phone": "123-456-7890",
+  "address": "123 Main St, City, Country",
+  "skills": ["JavaScript", "Node.js", "React"],
+  "education": ["Tech University - BSc Computer Science"],
+  "experience": ["Tech Corp - Software Engineer (2020-2023)"]
+}
+
+### GET User own account by cookie
+GET {{base-url}}/api/{{version}}/users/me
+
+
+### PATCH User's own account
+PATCH {{base-url}}/api/{{version}}/users/me
+Content-Type: application/json
+
+{
+  "email": "jane.doe@example.com"
+}
+
+### DELETE User's own account
+DELETE {{base-url}}/api/{{version}}/users/me
+
+### GET User's chats
+GET {{base-url}}/api/{{version}}/users/me/chats
+
+### PATCH User's chat
+PATCH {{base-url}}/api/{{version}}/users/me/chats
+

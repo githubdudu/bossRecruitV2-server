@@ -20,8 +20,8 @@ router.get("/", (req, res) => {
 /**
  * Add child routes
  */
-import apiRoutes from "./api/api.js";
-router.use("/api", apiRoutes);
+import apiRoutesV1 from "./api/v1/api.js";
+router.use("/api/v1", apiRoutesV1);
 
 /**
  * Export the router so it can be used outside.
