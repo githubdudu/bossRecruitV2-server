@@ -16,8 +16,8 @@ export async function connectToDatabase() {
     serverApi: {
       version: "1",
       strict: false,
-      deprecationErrors: true
-    }
+      deprecationErrors: true,
+    },
   };
   try {
     setupConnectionMonitoring();
@@ -34,7 +34,7 @@ const CONNECTION_STATES = {
   0: "disconnected",
   1: "connected",
   2: "connecting",
-  3: "disconnecting"
+  3: "disconnecting",
 };
 
 // Get the current connection status
@@ -44,7 +44,7 @@ export function getConnectionStatus() {
     state,
     stateDescription: CONNECTION_STATES[state] || "unknown",
     host: mongoose.connection.host,
-    name: mongoose.connection.name
+    name: mongoose.connection.name,
   };
 }
 

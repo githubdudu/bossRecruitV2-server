@@ -56,26 +56,26 @@ describe("ChatModel Tests", () => {
         it(`should not create a chat without the ${field} field`, async () => {
           const invalidChatData = { ...chatData };
           delete invalidChatData[field];
-          
+
           const chat = new ChatModel(invalidChatData);
           await expect(chat.save()).rejects.toThrow();
         });
       });
-    
+
     it("should create a chat with isRead set to true", async () => {
       const chat = new ChatModel({ ...chatData, isRead: true });
       await chat.save();
-      
+
       expect(chat.isRead).toBe(true);
     });
-    
+
     it("should default isRead to false if not provided", async () => {
       const chatWithoutIsRead = { ...chatData };
       delete chatWithoutIsRead.isRead;
-      
+
       const chat = new ChatModel(chatWithoutIsRead);
       await chat.save();
-      
+
       expect(chat.isRead).toBe(false);
     });
 
@@ -98,13 +98,13 @@ describe("ChatModel Tests", () => {
       message: "Updated message content",
       isRead: true
     };
-    
+
     beforeEach(async () => {
       // Create a chat before each test
       chat = new ChatModel(chatData);
       await chat.save();
     });
-    
+
     afterEach(async () => {
       // Clear the Chat collection after each test
       await ChatModel.deleteMany({});
@@ -119,21 +119,21 @@ describe("ChatModel Tests", () => {
       });
     });
   });
-  
+
   describe("timestamps", () => {
     let chat;
     beforeEach(async () => {
       chat = new ChatModel(chatData);
       await chat.save();
     });
-    
+
     it("should have createdAt field and updatedAt field", async () => {
       expect(chat.createdAt).toBeDefined();
       expect(chat.createdAt).toBeInstanceOf(Date);
       expect(chat.updatedAt).toBeDefined();
       expect(chat.updatedAt).toBeInstanceOf(Date);
     });
-    
+
     it("should update updatedAt field on update", async () => {
       const originalUpdatedAt = chat.updatedAt;
       chat.message = "Updated message";

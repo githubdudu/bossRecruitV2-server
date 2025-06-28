@@ -14,7 +14,7 @@ const DUMMY_USERS = [
     salary: 50000,
     company: "Tech Corp",
     jobPosition: "Software Engineer",
-    description: "Experienced software engineer with a passion for building scalable applications."
+    description: "Experienced software engineer with a passion for building scalable applications.",
   },
   {
     userName: "recruiter2",
@@ -24,7 +24,7 @@ const DUMMY_USERS = [
     salary: 60000,
     company: "Tech Corp",
     jobPosition: "Product Manager",
-    description: "Product manager with a track record of successful product launches."
+    description: "Product manager with a track record of successful product launches.",
   },
   {
     userName: "recruiter3",
@@ -34,7 +34,7 @@ const DUMMY_USERS = [
     salary: 70000,
     company: "Tech Corp",
     jobPosition: "Data Scientist",
-    description: "Data scientist with expertise in machine learning and data analysis."
+    description: "Data scientist with expertise in machine learning and data analysis.",
   },
   {
     userName: "recruiter4",
@@ -44,7 +44,7 @@ const DUMMY_USERS = [
     salary: 80000,
     company: "Tech Corp",
     jobPosition: "UX Designer",
-    description: "UX designer with a focus on user-centered design and usability testing."
+    description: "UX designer with a focus on user-centered design and usability testing.",
   },
   {
     userName: "recruiter5",
@@ -54,7 +54,7 @@ const DUMMY_USERS = [
     salary: 90000,
     company: "Tech Corp",
     jobPosition: "Marketing Manager",
-    description: "Marketing manager with experience in digital marketing and brand strategy."
+    description: "Marketing manager with experience in digital marketing and brand strategy.",
   },
   {
     userName: "applicant1",
@@ -66,7 +66,7 @@ const DUMMY_USERS = [
     experience: ["2 years in software development"],
     skills: ["JavaScript", "React", "Node.js"],
     address: "123 Main St, City, Country",
-    phone: "123-456-7890"
+    phone: "123-456-7890",
   },
   {
     userName: "applicant2",
@@ -78,7 +78,7 @@ const DUMMY_USERS = [
     experience: ["3 years in product management"],
     skills: ["Agile", "Scrum", "Product Strategy"],
     address: "456 Elm St, City, Country",
-    phone: "987-654-3210"
+    phone: "987-654-3210",
   },
   {
     userName: "applicant3",
@@ -90,7 +90,7 @@ const DUMMY_USERS = [
     experience: ["4 years in data analysis"],
     skills: ["Python", "Machine Learning", "SQL"],
     address: "789 Oak St, City, Country",
-    phone: "456-789-1230"
+    phone: "456-789-1230",
   },
   {
     userName: "applicant4",
@@ -102,7 +102,7 @@ const DUMMY_USERS = [
     experience: ["5 years in UX design"],
     skills: ["Figma", "User Research", "Prototyping"],
     address: "321 Pine St, City, Country",
-    phone: "321-654-9870"
+    phone: "321-654-9870",
   },
   {
     userName: "applicant5",
@@ -114,8 +114,8 @@ const DUMMY_USERS = [
     experience: ["3 years in digital marketing"],
     skills: ["SEO", "Content Marketing", "Social Media"],
     address: "654 Cedar St, City, Country",
-    phone: "654-321-0987"
-  }
+    phone: "654-321-0987",
+  },
 ];
 
 const LOREM = [
@@ -152,25 +152,23 @@ async function initDatabase() {
 
   await ChatModel.deleteMany({}); // Clear existing chats
   await UserModel.deleteMany({}); // Clear existing users
-  
+
   const userResult = await UserModel.insertMany(DUMMY_USERS); // Insert new dummy users
   console.log(`💬 ${userResult.length} dummy users created! 💬`);
-
 
   const userIds = await UserModel.find({}, "_id").lean();
   const randomChats = createRandomChats(userIds);
   const chatResult = await ChatModel.insertMany(randomChats);
   console.log(`💬 ${chatResult.length} random chats created! 💬`);
-  
+
   console.log("✨Database initialized done!✨");
-  
+
   await disconnectFromDatabase();
 }
 
 initDatabase();
 
 function createRandomChats(userIds) {
-  
   const randomChats = [];
   for (let i = 0; i < LOREM.length * 5; i++) {
     const randomMessage = LOREM[Math.floor(Math.random() * LOREM.length)];
@@ -184,9 +182,8 @@ function createRandomChats(userIds) {
       from: randomUser1._id,
       to: randomUser2._id,
       chatID: `${randomUser1}-${randomUser2}`,
-      message: randomMessage
+      message: randomMessage,
     });
   }
   return randomChats;
 }
-

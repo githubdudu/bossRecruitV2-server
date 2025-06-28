@@ -6,9 +6,9 @@ const chatSchema = mongoose.Schema(
     to: { type: String, required: true },
     chatID: { type: String, required: true },
     message: { type: String, required: true },
-    isRead: { type: Boolean, required: true, default: false }
+    isRead: { type: Boolean, required: true, default: false },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 const ChatModel = mongoose.model("Chat", chatSchema);
 

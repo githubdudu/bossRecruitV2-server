@@ -7,7 +7,7 @@ const userSchema = mongoose.Schema(
     userType: {
       type: String,
       enum: { values: ["applicant", "recruiter"], message: "{VALUE} is not a valid user type" },
-      required: true
+      required: true,
     },
 
     avatar: { type: String },
@@ -20,9 +20,9 @@ const userSchema = mongoose.Schema(
     address: { type: String },
     skills: { type: [String] },
     education: { type: [String] },
-    experience: { type: [String] }
+    experience: { type: [String] },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 const UserModel = mongoose.model("User", userSchema);
 
