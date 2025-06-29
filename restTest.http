@@ -50,7 +50,7 @@ Content-Type: application/json
   "company": "Tech Corp",
   "salary": 60000,
   "email": "johndoe@example.com",
-  "phone": "123-456-7890",
+  "phone": "1234567890",
   "address": "123 Main St, City, Country",
   "skills": ["JavaScript", "Node.js", "React"],
   "education": ["Tech University - BSc Computer Science"],
