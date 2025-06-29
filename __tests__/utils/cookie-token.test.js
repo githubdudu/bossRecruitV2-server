@@ -67,6 +67,7 @@ describe("Cookie Token Generator", () => {
 
     vi.resetModules();
     // Should still initialize but with default key
+    delete process.env.JWT_KEY; // In some cases (like Gemini CLI), JWT_KEY might still be loaded from .env
     await import("#utils/cookie-token.js");
 
     expect(TokenGenerator).toHaveBeenCalledWith(undefined, undefined, {
