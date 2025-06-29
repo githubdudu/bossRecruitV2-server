@@ -105,12 +105,27 @@ describe("UserModel Tests", () => {
       await user.save();
       expect(user.invalidProperty).toBeUndefined();
     });
+
+    it("should create a user with lowercase userName", async () => {
+      const user = new UserModel({ ...userData, userName: "TESTUSER" });
+      await user.save();
+
+      expect(user.userName).toBe("testuser");
+    });
+
+    it("should not create a user with a duplicate userName", async () => {
+      const user1 = new UserModel(userData);
+      await user1.save();
+
+      const user2 = new UserModel(userData);
+      await expect(user2.save()).rejects.toThrow();
+    });
   });
 
   describe("update", () => {
     let user;
     const updatedUserData = {
-      userName: "updatedUser",
+      userName: "updated_user",
       userPassword: "updatedPassword",
       userType: "recruiter"
     };
@@ -164,6 +179,11 @@ describe("UserModel Tests", () => {
       user = new UserModel(userData);
       await user.save();
     });
+    afterEach(async () => {
+      // Clear the User collection after each test
+      await UserModel.deleteMany({});
+    });
+    
     it("should have createdAt field and updatedAt field", async () => {
       expect(user.createdAt).toBeDefined();
       expect(user.createdAt).toBeInstanceOf(Date);
@@ -172,13 +192,15 @@ describe("UserModel Tests", () => {
     });
     it("should update updatedAt field on update", async () => {
       const originalUpdatedAt = user.updatedAt;
-      user.userName = "updatedUser";
+      const originalCreatedAt = user.createdAt;
+      user.userName = "updatedType";
       await new Promise((resolve) => setTimeout(resolve, 10)); // Introduce a small delay
       await user.save();
 
       expect(user.updatedAt).toBeDefined();
       expect(user.updatedAt).toBeInstanceOf(Date);
       expect(user.updatedAt.getTime()).toBeGreaterThan(originalUpdatedAt.getTime());
+      expect(user.createdAt.getTime()).toEqual(originalCreatedAt.getTime());
     });
   });
 });
