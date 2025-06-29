@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 import { connectToDatabase, disconnectFromDatabase } from "./mongodb.js";
 import { ChatModel } from "./models/ChatModel.js";
@@ -153,7 +154,16 @@ async function initDatabase() {
   await ChatModel.deleteMany({}); // Clear existing chats
   await UserModel.deleteMany({}); // Clear existing users
 
-  const userResult = await UserModel.insertMany(DUMMY_USERS); // Insert new dummy users
+  // Hash passwords for dummy users
+  const hashedUsers = await Promise.all(
+    DUMMY_USERS.map(async (user) => {
+      const salt = await bcrypt.genSalt(10);
+      user.userPassword = await bcrypt.hash(user.userPassword, salt);
+      return user;
+    })
+  );
+
+  const userResult = await UserModel.insertMany(hashedUsers); // Insert new dummy users
   console.log(`💬 ${userResult.length} dummy users created! 💬`);
 
   const userIds = await UserModel.find({}, "_id").lean();

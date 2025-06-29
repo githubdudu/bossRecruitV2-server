@@ -1,7 +1,7 @@
 /**
  * This is cookie token generator which instantiates a TokenGenerator
  */
-import TokenGenerator from "./token-generator";
+import TokenGenerator from "./token-generator.js";
 import dotenv from "dotenv";
 dotenv.config();
 

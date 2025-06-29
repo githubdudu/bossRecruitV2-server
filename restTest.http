@@ -4,13 +4,22 @@
 ### GET Hello World
 GET {{base-url}}/
 
-### Login User
+### Login User - Failure (Incorrect Credentials)
 POST {{base-url}}/api/{{version}}/auth/login
 Content-Type: application/json
 
 {
   "userName": "johndoe",
   "userPassword": "password123"
+}
+
+### Login User - Success (Recruiter)
+POST {{base-url}}/api/{{version}}/auth/login
+Content-Type: application/json
+
+{
+  "userName": "recruiter1",
+  "userPassword": "password1"
 }
 
 ### Logout User by cookie
