@@ -1,5 +1,6 @@
 import express from "express";
 import yup from "yup";
+import bcrypt from "bcrypt";
 
 import chatRoutes from "./chat.js";
 import { UserModel } from "#db/models/UserModel.js";
@@ -68,6 +69,8 @@ router.post("/", async (req, res) => {
     const userData = await userYupSchema.validate(req.body, { abortEarly: false, stripUnknown: true });
 
     // Create and save new user
+    const salt = await bcrypt.genSalt(10);
+    userData.userPassword = await bcrypt.hash(userData.userPassword, salt);
     const newUser = new UserModel(userData);
     await newUser.save();
 
