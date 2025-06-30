@@ -50,11 +50,9 @@ const userYupSchema = yup.object({
   company: yup.string().optional(),
   salary: yup.string().optional(),
   email: yup.string().email("Invalid email format").optional(),
-  phone: yup.string()
-    .matches(
-      /^\d{9,11}$/,
-      "Phone number must contain only digits and be 9-11 digits long"
-    )
+  phone: yup
+    .string()
+    .matches(/^\d{9,11}$/, "Phone number must contain only digits and be 9-11 digits long")
     .optional(),
   address: yup.string().optional(),
   skills: yup.array().of(yup.string().trim()).optional(),
@@ -66,7 +64,10 @@ const userYupSchema = yup.object({
 router.post("/", async (req, res) => {
   try {
     // Validate request body against schema
-    const userData = await userYupSchema.validate(req.body, { abortEarly: false, stripUnknown: true });
+    const userData = await userYupSchema.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
 
     // Create and save new user
     const salt = await bcrypt.genSalt(10);

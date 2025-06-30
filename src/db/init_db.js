@@ -160,7 +160,7 @@ async function initDatabase() {
       const salt = await bcrypt.genSalt(10);
       user.userPassword = await bcrypt.hash(user.userPassword, salt);
       return user;
-    })
+    }),
   );
 
   const userResult = await UserModel.insertMany(hashedUsers); // Insert new dummy users
