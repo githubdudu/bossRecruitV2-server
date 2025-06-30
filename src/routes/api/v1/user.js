@@ -2,13 +2,15 @@ import express from "express";
 import yup from "yup";
 import bcrypt from "bcrypt";
 
-import chatRoutes from "./chat.js";
 import { UserModel } from "#db/models/UserModel.js";
+import authCookie from "#middleware/authCookie.js";
 
 const router = express.Router();
 
-// Get all users
-router.get("/", async (req, res) => {
+/**
+ *  Get all users
+ */
+router.get("/", authCookie, async (req, res) => {
   try {
     const { type } = req.query;
     const query = type ? { userType: type } : {};
@@ -23,7 +25,9 @@ router.get("/", async (req, res) => {
   }
 });
 
-// User schema validation
+/**
+ *  User schema validation
+ */
 const userYupSchema = yup.object({
   userName: yup
     .string()
@@ -60,7 +64,9 @@ const userYupSchema = yup.object({
   experience: yup.array().of(yup.string().trim()).optional(),
 });
 
-// Create a new user
+/**
+ * Create a new user
+ */
 router.post("/", async (req, res) => {
   try {
     // Validate request body against schema
@@ -99,21 +105,10 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get user own account information from cookie
-router.get("/me", async (req, res) => {
-  return res.json({ message: "Authenticated user information" });
-});
-
-// Update a user by id from cookie
-router.patch("/me", async (req, res) => {
-  return res.json({ message: "User updated successfully" });
-});
-
-// Delete a user by id from cookie
-router.delete("/me", async (req, res) => {
-  return res.json({ message: "User deleted successfully" });
-});
-
-router.use("/me/chats/", chatRoutes);
+/**
+ * users/me sub-routes
+ */
+import meRouter from "./me.js";
+router.use("/me", meRouter);
 
 export default router;

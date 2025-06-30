@@ -6,7 +6,7 @@ import { getPayloadFromJWT } from "../utils/jwt-utils.js";
  * If any of those processes fail, a 401 status will be returned. Otherwise, the next() function will be called to continue executing
  * your route handlers.
  */
-export function authCookie(req, res, next) {
+function authCookie(req, res, next) {
   // TODO Complete this function
   if (!req.cookies.authToken) {
     res.sendStatus(401);
@@ -21,3 +21,5 @@ export function authCookie(req, res, next) {
     return;
   }
 }
+
+export default authCookie;

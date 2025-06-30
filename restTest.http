@@ -50,7 +50,7 @@ POST {{base-url}}/api/{{version}}/users
 Content-Type: application/json
 
 {
-  "userName": "johndoe",
+  "userName": "johndoe2",
   "userPassword": "password123",
   "userType": "recruiter",
   "avatar": "https://example.com/avatar.jpg",
