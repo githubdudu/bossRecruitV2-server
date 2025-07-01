@@ -29,6 +29,33 @@ const userSchema = mongoose.Schema(
   },
   { timestamps: true },
 );
+
+class UserClass {
+  static findByUserType(userType) {
+    const query = userType ? { userType } : {};
+    return this.find(query).select("-userPassword -__v").lean();
+  }
+
+  static createUser(userData) {
+    return this.create(userData);
+  }
+
+  static findUserById(userId) {
+    return this.findById(userId).select("-userPassword -__v").lean();
+  }
+
+  static updateUserById(userId, updateData) {
+    return this.findByIdAndUpdate(userId, updateData, { new: true })
+      .select("-userPassword -__v")
+      .lean();
+  }
+
+  static deleteUserById(userId) {
+    return this.findByIdAndDelete(userId);
+  }
+}
+
+userSchema.loadClass(UserClass);
 const UserModel = mongoose.model("User", userSchema);
 
 export { userSchema, UserModel };

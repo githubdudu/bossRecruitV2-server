@@ -15,7 +15,7 @@ router.use(attachUserId);
 
 // Get user own account information from cookie
 router.get("/", async (req, res) => {
-  const user = await UserModel.findById(req.userId, "-userPassword -__v").lean();
+  const user = await UserModel.findUserById(req.userId);
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
@@ -24,6 +24,7 @@ router.get("/", async (req, res) => {
 
 /**
  *  User schema validation
+ *  userName is not allowed to be updated.
  */
 const userYupSchema = yup.object({
   userPassword: yup
@@ -71,7 +72,7 @@ router.patch("/", async (req, res) => {
     }
 
     // Update user in the database
-    const updatedUser = await UserModel.findByIdAndUpdate(userId, userData, { new: true });
+    const updatedUser = await UserModel.updateUserById(userId, userData);
     // Check if a user was found and updated
     if (!updatedUser) {
       return res.sendStatus(404);
@@ -97,7 +98,7 @@ router.delete("/", async (req, res) => {
   const { userId } = req;
   try {
     // Delete user from the database
-    const deletedUser = await UserModel.findByIdAndDelete(userId);
+    const deletedUser = await UserModel.deleteUserById(userId);
     // Check if a user was found and deleted
     if (!deletedUser) {
       return res.sendStatus(404);

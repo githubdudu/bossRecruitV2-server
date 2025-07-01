@@ -30,10 +30,10 @@ POST {{base-url}}/api/{{version}}/auth/logout
 GET {{base-url}}/api/{{version}}/users
 
 ### GET Users by type recruiter
-GET {{base-url}}/api/{{version}}/users?type=recruiter
+GET {{base-url}}/api/{{version}}/users?usertype=recruiter
 
 ### GET Users by type applicant
-GET {{base-url}}/api/{{version}}/users?type=applicant
+GET {{base-url}}/api/{{version}}/users?usertype=applicant
 
 ### POST User
 POST {{base-url}}/api/{{version}}/users

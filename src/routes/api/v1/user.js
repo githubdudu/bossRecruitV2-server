@@ -12,11 +12,8 @@ const router = express.Router();
  */
 router.get("/", authCookie, async (req, res) => {
   try {
-    const { type } = req.query;
-    const query = type ? { userType: type } : {};
-
-    // Filter out sensitive fields: userPassword and __v
-    const users = await UserModel.find(query).select("-userPassword -__v");
+    const { usertype } = req.query;
+    const users = await UserModel.findByUserType(usertype);
 
     return res.status(200).json(users);
   } catch (error) {
@@ -78,8 +75,8 @@ router.post("/", async (req, res) => {
     // Create and save new user
     const salt = await bcrypt.genSalt(10);
     userData.userPassword = await bcrypt.hash(userData.userPassword, salt);
-    const newUser = new UserModel(userData);
-    await newUser.save();
+
+    await UserModel.createUser(userData);
 
     return res.status(201).json({ message: "User created successfully" });
   } catch (error) {
