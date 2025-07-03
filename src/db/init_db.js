@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
 import { connectToDatabase, disconnectFromDatabase } from "./mongodb.js";
-import { ChatModel } from "./models/ChatModel.js";
+import { MessageModel } from "./models/MessageModel.js";
 import { ConversationModel } from "./models/ConversationModel.js";
 import { UserModel } from "./models/UserModel.js";
 
@@ -152,7 +152,7 @@ const LOREM = [
 async function initDatabase() {
   await connectToDatabase();
 
-  await ChatModel.deleteMany({}); // Clear existing chats
+  await MessageModel.deleteMany({}); // Clear existing messages
   await ConversationModel.deleteMany({}); // Clear existing conversations
   await UserModel.deleteMany({}); // Clear existing users
 
@@ -171,12 +171,12 @@ async function initDatabase() {
   const recruiters = await UserModel.find({ userType: "recruiter" }).lean();
   const applicants = await UserModel.find({ userType: "applicant" }).lean();
 
-  const randomChats = await createRandomChats(recruiters, applicants);
-  const chatResult = await ChatModel.insertMany(randomChats);
+  const randomMessages = await createRandomMessages(recruiters, applicants);
+  const messageResult = await MessageModel.insertMany(randomMessages);
 
   const conversationCounts = await ConversationModel.countDocuments();
   console.log(
-    `💬 ${chatResult.length} random chats created in ${conversationCounts} conversations! 💬`,
+    `💬 ${messageResult.length} random messages created in ${conversationCounts} conversations! 💬`,
   );
 
   console.log("✨Database initialized done!✨");
@@ -186,21 +186,21 @@ async function initDatabase() {
 
 initDatabase();
 
-async function createRandomChats(recruiters, applicants) {
-  const randomChats = [];
+async function createRandomMessages(recruiters, applicants) {
+  const randomMessages = [];
   for (let i = 0; i < LOREM.length * 5; i++) {
-    const randomMessage = LOREM[Math.floor(Math.random() * LOREM.length)];
+    const randomText = LOREM[Math.floor(Math.random() * LOREM.length)];
 
     const [randomRecruiterId, randomApplicantId] = createRandomParticipants(recruiters, applicants);
     const conversationId = await findOrCreateConversation(randomRecruiterId, randomApplicantId);
 
-    randomChats.push({
+    randomMessages.push({
       senderId: Math.random() < 0.5 ? randomRecruiterId : randomApplicantId,
       conversationId: conversationId,
-      text: randomMessage,
+      text: randomText,
     });
   }
-  return randomChats;
+  return randomMessages;
 }
 
 /** * Select random recruiters and applicants.

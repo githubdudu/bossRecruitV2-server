@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const chatSchema = mongoose.Schema(
+const messageSchema = mongoose.Schema(
   {
     senderId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -19,7 +19,7 @@ const chatSchema = mongoose.Schema(
 );
 // This specific index is designed to make one type of query extremely fast: "Find all messages within a
 // specific conversation, and show me the newest ones first."
-chatSchema.index({ conversationId: 1, createdAt: -1 });
-const ChatModel = mongoose.model("Chat", chatSchema);
+messageSchema.index({ conversationId: 1, createdAt: -1 });
+const MessageModel = mongoose.model("Message", messageSchema);
 
-export { chatSchema, ChatModel };
+export { messageSchema, MessageModel };
