@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 
 import authCookie from "#middleware/authCookie.js";
 import attachUserId from "#middleware/attachUserId.js";
-import chatRoutes from "./chat.js";
+import messageRoutes from "./message.js";
 import { UserModel } from "#db/models/UserModel.js";
 const router = express.Router();
 /**
@@ -110,6 +110,6 @@ router.delete("/", async (req, res) => {
   }
 });
 
-router.use("/chats/", chatRoutes);
+router.use("/messages/", messageRoutes);
 
 export default router;

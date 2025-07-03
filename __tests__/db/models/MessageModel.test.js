@@ -39,7 +39,7 @@ describe("MessageModel Tests", () => {
       await MessageModel.deleteMany({});
     });
 
-    it("should create a chat message with all required fields", async () => {
+    it("should create a message with all required fields", async () => {
       const message = new MessageModel(messageData);
       await message.save();
 

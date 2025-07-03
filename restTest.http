@@ -81,9 +81,9 @@ Content-Type: application/json
 ### DELETE User's own account
 DELETE {{base-url}}/api/{{version}}/users/me
 
-### GET User's chats
-GET {{base-url}}/api/{{version}}/users/me/chats
+### GET User's messages
+GET {{base-url}}/api/{{version}}/users/me/messages
 
-### PATCH User's chat
-PATCH {{base-url}}/api/{{version}}/users/me/chats
+### PATCH User's message
+PATCH {{base-url}}/api/{{version}}/users/me/messages
 
