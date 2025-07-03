@@ -10,12 +10,12 @@ import { ChatModel } from "#db/models/ChatModel.js";
 let mongoServer;
 
 describe("ChatModel Tests", () => {
+  const senderId = new mongoose.Types.ObjectId();
   const chatData = {
-    from: "user1",
-    to: "user2",
-    chatID: "chat123",
-    message: "Hello, how are you?",
-    isRead: false
+    senderId,
+    conversationId: "conversationId123",
+    text: "Hello, how are you?",
+    isRead: false,
   };
 
   beforeAll(async () => {
@@ -43,10 +43,9 @@ describe("ChatModel Tests", () => {
       const chat = new ChatModel(chatData);
       await chat.save();
 
-      expect(chat.from).toBe("user1");
-      expect(chat.to).toBe("user2");
-      expect(chat.chatID).toBe("chat123");
-      expect(chat.message).toBe("Hello, how are you?");
+      expect(chat.senderId).to.equal(senderId);
+      expect(chat.conversationId).to.equal("conversationId123");
+      expect(chat.text).toBe("Hello, how are you?");
       expect(chat.isRead).toBe(false);
     });
 
@@ -92,11 +91,10 @@ describe("ChatModel Tests", () => {
   describe("update", () => {
     let chat;
     const updatedChatData = {
-      from: "updatedUser1",
-      to: "updatedUser2",
-      chatID: "updatedChat123",
-      message: "Updated message content",
-      isRead: true
+      senderId: new mongoose.Types.ObjectId(),
+      conversationId: "conversationId456",
+      text: "Updated message content",
+      isRead: true,
     };
 
     beforeEach(async () => {
@@ -136,7 +134,7 @@ describe("ChatModel Tests", () => {
 
     it("should update updatedAt field on update", async () => {
       const originalUpdatedAt = chat.updatedAt;
-      chat.message = "Updated message";
+      chat.text = "Updated message";
       await new Promise((resolve) => setTimeout(resolve, 10)); // Add a brief delay
       await chat.save();
 

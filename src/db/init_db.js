@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 
 import { connectToDatabase, disconnectFromDatabase } from "./mongodb.js";
 import { ChatModel } from "./models/ChatModel.js";
+import { ConversationModel } from "./models/ConversationModel.js";
 import { UserModel } from "./models/UserModel.js";
 
 // Dummy data for initial users, five for recruiters and five for applicants
@@ -152,6 +153,7 @@ async function initDatabase() {
   await connectToDatabase();
 
   await ChatModel.deleteMany({}); // Clear existing chats
+  await ConversationModel.deleteMany({}); // Clear existing conversations
   await UserModel.deleteMany({}); // Clear existing users
 
   // Hash passwords for dummy users
@@ -166,10 +168,16 @@ async function initDatabase() {
   const userResult = await UserModel.insertMany(hashedUsers); // Insert new dummy users
   console.log(`💬 ${userResult.length} dummy users created! 💬`);
 
-  const userIds = await UserModel.find({}, "_id").lean();
-  const randomChats = createRandomChats(userIds);
+  const recruiters = await UserModel.find({ userType: "recruiter" }).lean();
+  const applicants = await UserModel.find({ userType: "applicant" }).lean();
+
+  const randomChats = await createRandomChats(recruiters, applicants);
   const chatResult = await ChatModel.insertMany(randomChats);
-  console.log(`💬 ${chatResult.length} random chats created! 💬`);
+
+  const conversationCounts = await ConversationModel.countDocuments();
+  console.log(
+    `💬 ${chatResult.length} random chats created in ${conversationCounts} conversations! 💬`,
+  );
 
   console.log("✨Database initialized done!✨");
 
@@ -178,22 +186,69 @@ async function initDatabase() {
 
 initDatabase();
 
-function createRandomChats(userIds) {
+async function createRandomChats(recruiters, applicants) {
   const randomChats = [];
   for (let i = 0; i < LOREM.length * 5; i++) {
     const randomMessage = LOREM[Math.floor(Math.random() * LOREM.length)];
-    // randomly choose two different users to create a chat
-    const randomUser1 = userIds[Math.floor(Math.random() * userIds.length)];
-    let randomUser2 = userIds[Math.floor(Math.random() * userIds.length)];
-    while (randomUser1 == randomUser2) {
-      randomUser2 = userIds[Math.floor(Math.random() * userIds.length)];
-    }
+
+    const [randomRecruiterId, randomApplicantId] = createRandomParticipants(recruiters, applicants);
+    const conversationId = await findOrCreateConversation(randomRecruiterId, randomApplicantId);
+
     randomChats.push({
-      from: randomUser1._id,
-      to: randomUser2._id,
-      chatID: `${randomUser1}-${randomUser2}`,
-      message: randomMessage,
+      senderId: Math.random() < 0.5 ? randomRecruiterId : randomApplicantId,
+      conversationId: conversationId,
+      text: randomMessage,
     });
   }
   return randomChats;
+}
+
+/** * Select random recruiters and applicants.
+ * @param {Array} recruiters - Array of recruiter user objects.
+ * @param {Array} applicants - Array of applicant user objects.
+ * @returns {Array<mongoose.Types.ObjectId>} Array containing recruiter ID and applicant ID.
+ */
+function createRandomParticipants(recruiters, applicants) {
+  const randomRecruiter = recruiters[Math.floor(Math.random() * recruiters.length)];
+  const randomApplicant = applicants[Math.floor(Math.random() * applicants.length)];
+  return [randomRecruiter._id, randomApplicant._id];
+}
+
+/**
+ * Atomically finds a conversation or creates it if it doesn't exist.
+ * Does NOT update the conversation if it already exists.
+ * @param {mongoose.Types.ObjectId} recruiterId
+ * @param {mongoose.Types.ObjectId} applicantId
+ * @returns {Promise<mongoose.Types.ObjectId>} The _id of the found or created conversation.
+ */
+async function findOrCreateConversation(recruiterId, applicantId) {
+  // 1. The Filter
+  // Sorting ensures that the order of participants doesn't matter.
+  const participantsArray = [recruiterId, applicantId].sort();
+  const _id = participantsArray.join("_");
+
+  const filter = {
+    _id: _id,
+  };
+
+  // 2. The Update: This is the key part.
+  // An empty update `{}` means "do nothing" if the document is found.
+  // `$setOnInsert` specifies the data to use ONLY when a new document is created.
+  const update = {
+    $setOnInsert: {
+      _id: _id,
+      participants: participantsArray,
+    },
+  };
+
+  // 3. The Options:
+  const options = {
+    upsert: true, // Create the document if it doesn't exist.
+    returnDocument: "after", // Return the document after the update.
+    setDefaultsOnInsert: true, // Apply schema defaults on creation.
+  };
+
+  const conversation = await ConversationModel.findOneAndUpdate(filter, update, options);
+
+  return conversation._id;
 }
