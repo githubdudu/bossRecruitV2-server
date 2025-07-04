@@ -1,6 +1,8 @@
 @base-url = http://localhost:5173
 @version = v1
 
+@conversationId = null
+
 ### GET Hello World
 GET {{base-url}}/
 
@@ -14,6 +16,7 @@ Content-Type: application/json
 }
 
 ### Login User - Success (Recruiter)
+# @name login
 POST {{base-url}}/api/{{version}}/auth/login
 Content-Type: application/json
 
@@ -46,6 +49,7 @@ Content-Type: application/json
 }
 
 ### POST User
+# @name createUser
 POST {{base-url}}/api/{{version}}/users
 Content-Type: application/json
 
@@ -81,14 +85,19 @@ Content-Type: application/json
 ### DELETE User's own account
 DELETE {{base-url}}/api/{{version}}/users/me
 
-### GET User's messages
-GET {{base-url}}/api/{{version}}/users/me/messages
+
+### GET User's conversations
+#@conversations
+GET {{base-url}}/api/{{version}}/users/me/conversations
+
+{{
+  response = JSON.parse(response.body);
+  $global.conversationId = response[0]._id;
+}}
 
 ### GET User's messages by conversation ID
-GET {{base-url}}/api/{{version}}/users/me/messages/:conversationId
+GET {{base-url}}/api/{{version}}/users/me/messages/{{$global.conversationId}}
 
-### PATCH User's message
-PATCH {{base-url}}/api/{{version}}/users/me/messages
 
 ### PATCH User's message by conversation ID
-PATCH {{base-url}}/api/{{version}}/users/me/messages/:conversationId
+PATCH {{base-url}}/api/{{version}}/users/me/messages/{{$global.conversationId}}

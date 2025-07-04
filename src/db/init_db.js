@@ -172,7 +172,8 @@ async function initDatabase() {
   const applicants = await UserModel.find({ userType: "applicant" }).lean();
 
   const randomMessages = await createRandomMessages(recruiters, applicants);
-  const messageResult = await MessageModel.insertMany(randomMessages);
+  // disable auto timestamps
+  const messageResult = await MessageModel.insertMany(randomMessages, { timestamps: false });
 
   const conversationCounts = await ConversationModel.countDocuments();
   console.log(
@@ -188,16 +189,24 @@ initDatabase();
 
 async function createRandomMessages(recruiters, applicants) {
   const randomMessages = [];
+  const aDayAgo = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+  //  Chronological timestamps generator
+  const nextRandomTime = getRandomTimeFrom(aDayAgo);
+
   for (let i = 0; i < LOREM.length * 5; i++) {
     const randomText = LOREM[Math.floor(Math.random() * LOREM.length)];
 
     const [randomRecruiterId, randomApplicantId] = createRandomParticipants(recruiters, applicants);
     const conversationId = await findOrCreateConversation(randomRecruiterId, randomApplicantId);
 
+    // Create chronological timestamps
+    const createdAt = nextRandomTime();
     randomMessages.push({
       senderId: Math.random() < 0.5 ? randomRecruiterId : randomApplicantId,
       conversationId: conversationId,
       text: randomText,
+      createdAt: createdAt,
+      updatedAt: createdAt,
     });
   }
   return randomMessages;
@@ -251,4 +260,23 @@ async function findOrCreateConversation(recruiterId, applicantId) {
   const conversation = await ConversationModel.findOneAndUpdate(filter, update, options);
 
   return conversation._id;
+}
+
+/**
+ * Generates a random timestamp starting from the given date.
+ * The function maintains an internal state to incrementally generate
+ * random timestamps within a 1-hour period from the last generated time.
+ *
+ * @param {Date|string} start - The starting date or timestamp.
+ * @param {number} [period=3600000] - The period in milliseconds to generate random timestamps.
+ * @returns {Object} An object with a `next` method to get the next random timestamp.
+ */
+function getRandomTimeFrom(start, period = 60 * 60 * 1000) {
+  let startTime = new Date(start);
+
+  return function next() {
+    const randomOffset = Math.floor(Math.random() * period) + 1000;
+    startTime = new Date(startTime.getTime() + randomOffset);
+    return startTime;
+  };
 }

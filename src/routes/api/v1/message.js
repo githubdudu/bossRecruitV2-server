@@ -1,23 +1,33 @@
 import express from "express";
 
+import { MessageModel } from "#db/models/MessageModel.js";
+
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  return res.json({ message: "List of all messages" });
-});
-
+// Retrieve messages for a specific conversation for the authenticated user
 router.get("/:conversationId", async (req, res) => {
   const { conversationId } = req.params;
-  return res.json({ message: `Messages for conversation ${conversationId}` });
+  const { userId } = req;
+
+  const messages = await MessageModel.findMessagesByConversationId(conversationId);
+  if (!messages || messages.length === 0) {
+    return res.sendStatus(404);
+  }
+  return res.json(messages);
 });
 
-router.patch("/", async (req, res) => {
-  return res.json({ message: `Messages updated successfully` });
-});
-
+// Mark all messages in the specified conversation as "read",
+// indicating that the user has viewed them.
 router.patch("/:conversationId", async (req, res) => {
   const { conversationId } = req.params;
-  return res.json({ message: `Messages for conversation ${conversationId} updated successfully` });
+  const { userId } = req;
+  try {
+    await MessageModel.markMessagesAsRead(userId, conversationId);
+    return res.status(204).send();
+  } catch (error) {
+    console.error("Error updating messages to read for conversation:", error);
+    return res.status(500).json({ error: "Failed to update messages to read for conversation" });
+  }
 });
 
 export default router;
